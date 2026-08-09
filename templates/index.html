@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinDash | Real-Time Indian Financial Dashboard & Market Intelligence</title>
+    <meta name="description" content="Real-time financial dashboard monitoring Indian stock prices (NSE/BSE), market trends, technical indicators, and RBI economic intelligence in INR (₹).">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body class="dark-theme">
+    <!-- Top Live Ticker Marquee Ribbon -->
+    <div class="ticker-ribbon-container">
+        <div class="ticker-ribbon" id="tickerRibbon">
+            <!-- Dynamic ticker items populated via JS -->
+            <div class="ticker-item"><span class="ticker-symbol">NIFTY50</span> <span class="ticker-price">₹24,350.00</span> <span class="ticker-change gain">+0.77%</span></div>
+            <div class="ticker-item"><span class="ticker-symbol">SENSEX</span> <span class="ticker-price">₹79,800.00</span> <span class="ticker-change gain">+0.66%</span></div>
+            <div class="ticker-item"><span class="ticker-symbol">RELIANCE</span> <span class="ticker-price">₹2,980.50</span> <span class="ticker-change gain">+1.43%</span></div>
+            <div class="ticker-item"><span class="ticker-symbol">TCS</span> <span class="ticker-price">₹4,150.00</span> <span class="ticker-change gain">+1.68%</span></div>
+            <div class="ticker-item"><span class="ticker-symbol">INFY</span> <span class="ticker-price">₹1,820.40</span> <span class="ticker-change loss">-0.67%</span></div>
+            <div class="ticker-item"><span class="ticker-symbol">BTC-INR</span> <span class="ticker-price">₹52,50,000.00</span> <span class="ticker-change gain">+2.42%</span></div>
+        </div>
+    </div>
+
+    <!-- Main Navigation Header -->
+    <header class="navbar">
+        <div class="nav-brand">
+            <div class="brand-logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
+                    <polyline points="16 7 22 7 22 13"></polyline>
+                </svg>
+            </div>
+            <div class="brand-text">Fin<span>Dash</span> <small style="font-size:0.7rem; color:var(--accent-gold); font-weight:700; margin-left:4px">INR ₹</small></div>
+            <span class="live-status-badge"><span class="pulse-dot"></span> LIVE</span>
+        </div>
+
+        <nav class="nav-tabs" id="navTabs">
+            <button class="nav-btn active" data-tab="overviewTab">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                Overview
+            </button>
+            <button class="nav-btn" data-tab="chartStudioTab">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                Chart Studio
+            </button>
+            <button class="nav-btn" data-tab="economicTab">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                RBI & Economic Indicators
+            </button>
+            <button class="nav-btn" data-tab="screenerTab">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+                Stock Screener
+            </button>
+            <button class="nav-btn" data-tab="portfolioTab">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
+                Portfolio
+            </button>
+            <button class="nav-btn" data-tab="newsTab">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 20H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v1m2 13a2 2 0 0 1-2-2V7m2 13a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2"></path></svg>
+                News & AI Insights
+            </button>
+        </nav>
+
+        <div class="nav-actions">
+            <div class="search-box">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="text" id="globalSearch" placeholder="Search NSE/BSE stock..." autocomplete="off">
+                <div class="search-dropdown" id="searchDropdown"></div>
+            </div>
+            <button class="btn-refresh" id="refreshBtn" title="Refresh Live Data">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Container Content -->
+    <main class="app-container">
+        
+        <!-- ==================== TAB 1: OVERVIEW ==================== -->
+        <section class="tab-content active" id="overviewTab">
+            <!-- Market Overview Summary Cards -->
+            <div class="indices-grid" id="indicesGrid">
+                <!-- Populated via JS -->
+            </div>
+
+            <div class="dashboard-grid">
+                <!-- Left 8-col: Main Chart Showcase -->
+                <div class="glass-card main-chart-card">
+                    <div class="card-header">
+                        <div class="stock-title-info">
+                            <h2 id="overviewStockSymbol">RELIANCE</h2>
+                            <span class="stock-name" id="overviewStockName">Reliance Industries Ltd.</span>
+                            <span class="badge sector-badge" id="overviewStockSector">Energy & Retail</span>
+                        </div>
+                        <div class="price-header-display">
+                            <div class="big-price" id="overviewPrice">₹2,980.50</div>
+                            <div class="price-change gain" id="overviewChange">+₹42.10 (+1.43%)</div>
+                        </div>
+                    </div>
+
+                    <div class="chart-container">
+                        <canvas id="overviewChartCanvas"></canvas>
+                    </div>
+                </div>
+
+                <!-- Right 4-col: Gainers, Losers & Watchlist -->
+                <div class="side-panel-stack">
+                    <!-- Top Gainers & Losers Card -->
+                    <div class="glass-card">
+                        <div class="card-header">
+                            <h3>Indian Market Movers</h3>
+                            <div class="tab-pills">
+                                <button class="pill-btn active" id="btnGainers">Top Gainers</button>
+                                <button class="pill-btn" id="btnLosers">Top Losers</button>
+                            </div>
+                        </div>
+                        <div class="movers-list" id="moversList">
+                            <!-- Populated via JS -->
+                        </div>
+                    </div>
+
+                    <!-- Watchlist Quick Preview Card -->
+                    <div class="glass-card">
+                        <div class="card-header">
+                            <h3>My Watchlist</h3>
+                            <button class="text-link-btn" onclick="switchTab('screenerTab')">View All</button>
+                        </div>
+                        <div class="watchlist-compact" id="watchlistCompact">
+                            <!-- Populated via JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== TAB 2: CHART STUDIO ==================== -->
+        <section class="tab-content" id="chartStudioTab">
+            <div class="studio-layout">
+                <!-- Left Chart Control Toolbar -->
+                <div class="glass-card studio-toolbar">
+                    <div class="symbol-selector">
+                        <label for="symbolSelect">Select Ticker:</label>
+                        <select id="symbolSelect" class="form-select">
+                            <option value="RELIANCE">RELIANCE - Reliance Industries Ltd.</option>
+                            <option value="TCS">TCS - Tata Consultancy Services</option>
+                            <option value="INFY">INFY - Infosys Limited</option>
+                            <option value="HDFCBANK">HDFCBANK - HDFC Bank Limited</option>
+                            <option value="ICICIBANK">ICICIBANK - ICICI Bank Limited</option>
+                            <option value="TATAMOTORS">TATAMOTORS - Tata Motors Limited</option>
+                            <option value="BHARTIARTL">BHARTIARTL - Bharti Airtel Limited</option>
+                            <option value="NIFTY50">NIFTY50 - NIFTY 50 Index</option>
+                            <option value="SENSEX">SENSEX - BSE SENSEX Index</option>
+                            <option value="BTC-INR">BTC-INR - Bitcoin (INR)</option>
+                        </select>
+                    </div>
+
+                    <div class="timeframe-group">
+                        <span class="tf-label">Timeframe:</span>
+                        <button class="tf-btn" data-tf="1D">1D</button>
+                        <button class="tf-btn" data-tf="1W">1W</button>
+                        <button class="tf-btn active" data-tf="1M">1M</button>
+                        <button class="tf-btn" data-tf="1Y">1Y</button>
+                        <button class="tf-btn" data-tf="ALL">ALL</button>
+                    </div>
+
+                    <div class="indicator-toggles">
+                        <span class="tf-label">Overlays:</span>
+                        <label class="checkbox-label"><input type="checkbox" id="toggleSMA20" checked> SMA 20</label>
+                        <label class="checkbox-label"><input type="checkbox" id="toggleSMA50" checked> SMA 50</label>
+                    </div>
+                </div>
+
+                <!-- Studio Main Chart & Indicators -->
+                <div class="glass-card studio-chart-card">
+                    <div class="card-header">
+                        <div class="symbol-header-info">
+                            <h2 id="studioSymbol">RELIANCE</h2>
+                            <div class="studio-price-tag">
+                                <span id="studioPrice" class="price-val">₹2,980.50</span>
+                                <span id="studioChange" class="badge gain">+₹42.10 (+1.43%)</span>
+                            </div>
+                        </div>
+                        <div class="studio-stats-summary" id="studioStatsSummary">
+                            <!-- Populated via JS -->
+                        </div>
+                    </div>
+
+                    <!-- Price & Moving Averages Chart -->
+                    <div class="studio-chart-wrapper">
+                        <canvas id="studioMainChart"></canvas>
+                    </div>
+
+                    <!-- RSI Technical Sub-chart -->
+                    <div class="rsi-chart-header">
+                        <h4>RSI (14) Relative Strength Index</h4>
+                        <span class="rsi-reading" id="rsiReading">RSI: 58.4 (Neutral)</span>
+                    </div>
+                    <div class="rsi-chart-wrapper">
+                        <canvas id="studioRsiChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== TAB 3: ECONOMIC INDICATORS ==================== -->
+        <section class="tab-content" id="economicTab">
+            <div class="section-intro">
+                <h2>Indian Macroeconomic Indicators & RBI Policy Tracking</h2>
+                <p>Monitor Reserve Bank of India (RBI) monetary policy, CPI inflation trends, domestic GDP growth, labor statistics, and market sentiment.</p>
+            </div>
+
+            <div class="econ-grid" id="econGrid">
+                <!-- Populated via JS -->
+            </div>
+        </section>
+
+        <!-- ==================== TAB 4: STOCK SCREENER ==================== -->
+        <section class="tab-content" id="screenerTab">
+            <div class="glass-card filter-card">
+                <div class="screener-filters">
+                    <div class="filter-group">
+                        <label>Search Indian Asset:</label>
+                        <input type="text" id="screenerQuery" placeholder="Filter by symbol or company...">
+                    </div>
+                    <div class="filter-group">
+                        <label>Sector:</label>
+                        <select id="screenerSector">
+                            <option value="">All Sectors</option>
+                            <option value="Energy & Retail">Energy & Retail</option>
+                            <option value="Technology">Technology</option>
+                            <option value="Banking & Finance">Banking & Finance</option>
+                            <option value="Automotive">Automotive</option>
+                            <option value="Telecom">Telecom</option>
+                            <option value="Index Fund">Index Fund</option>
+                            <option value="Cryptocurrency">Cryptocurrency</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Max Price (₹):</label>
+                        <input type="number" id="screenerMaxPrice" placeholder="e.g. 5000" value="10000000">
+                    </div>
+                    <button class="btn-primary" id="btnApplyScreener">Apply Filters</button>
+                </div>
+            </div>
+
+            <div class="glass-card table-card">
+                <div class="card-header">
+                    <h3>NSE / BSE Stock Market Screener (<span id="screenerCount">0</span> Assets)</h3>
+                </div>
+                <div class="table-responsive">
+                    <table class="data-table" id="screenerTable">
+                        <thead>
+                            <tr>
+                                <th>Watch</th>
+                                <th>Symbol</th>
+                                <th>Name</th>
+                                <th>Sector</th>
+                                <th>Price (₹)</th>
+                                <th>Change (%)</th>
+                                <th>Volume</th>
+                                <th>Market Cap</th>
+                                <th>P/E Ratio</th>
+                                <th>52W Range</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="screenerTbody">
+                            <!-- Populated via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== TAB 5: PORTFOLIO ==================== -->
+        <section class="tab-content" id="portfolioTab">
+            <!-- Portfolio Top Summary Banner -->
+            <div class="portfolio-banner-grid">
+                <div class="glass-card p-stat-card">
+                    <span class="p-label">Total Portfolio Value</span>
+                    <h2 class="p-value" id="portfolioTotalValue">₹0.00</h2>
+                </div>
+                <div class="glass-card p-stat-card">
+                    <span class="p-label">Total Cost Basis</span>
+                    <h3 class="p-subvalue" id="portfolioCostBasis">₹0.00</h3>
+                </div>
+                <div class="glass-card p-stat-card">
+                    <span class="p-label">Total Profit / Loss</span>
+                    <h3 class="p-subvalue gain" id="portfolioTotalPL">+₹0.00 (+0.00%)</h3>
+                </div>
+                <div class="glass-card p-stat-card">
+                    <span class="p-label">Cash Balance</span>
+                    <h3 class="p-subvalue" id="portfolioCash">₹5,00,000.00</h3>
+                </div>
+            </div>
+
+            <div class="portfolio-grid">
+                <!-- Left 8-col: Holdings Table -->
+                <div class="glass-card table-card">
+                    <div class="card-header">
+                        <h3>Indian Portfolio Holdings</h3>
+                        <button class="btn-primary btn-sm" onclick="openTradeModal('BUY', 'RELIANCE')">+ Quick Trade</button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Asset</th>
+                                    <th>Shares</th>
+                                    <th>Avg Buy Price</th>
+                                    <th>Current Price</th>
+                                    <th>Market Value</th>
+                                    <th>Unrealized P/L</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="portfolioTbody">
+                                <!-- Populated via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Right 4-col: Donut Asset Allocation -->
+                <div class="glass-card">
+                    <div class="card-header">
+                        <h3>Asset Allocation</h3>
+                    </div>
+                    <div class="donut-chart-container">
+                        <canvas id="assetAllocationChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== TAB 6: MARKET NEWS & AI INSIGHTS ==================== -->
+        <section class="tab-content" id="newsTab">
+            <div class="section-intro">
+                <h2>Real-Time Indian Market Intelligence & Sentiment Feed</h2>
+                <p>AI-driven sentiment scoring analyzing live headlines from Economic Times, LiveMint, Reuters, and RBI policy announcements.</p>
+            </div>
+
+            <div class="news-grid" id="newsGrid">
+                <!-- Populated via JS -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Trade Action Modal Dialog -->
+    <div class="modal-overlay" id="tradeModal">
+        <div class="glass-card modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Execute Trade Order (NSE/BSE)</h3>
+                <button class="close-modal" id="closeModalBtn">&times;</button>
+            </div>
+            <form id="tradeForm">
+                <div class="form-group">
+                    <label>Order Action:</label>
+                    <select id="tradeAction" class="form-control">
+                        <option value="BUY">BUY</option>
+                        <option value="SELL">SELL</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Ticker Symbol:</label>
+                    <select id="tradeSymbol" class="form-control">
+                        <!-- Populated dynamically -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Number of Shares:</label>
+                    <input type="number" id="tradeShares" class="form-control" min="0.01" step="any" required placeholder="e.g. 10">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" id="cancelTradeBtn">Cancel</button>
+                    <button type="submit" class="btn-primary" id="confirmTradeBtn">Confirm Order</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Custom JS -->
+    <script src="/static/js/dashboard.js"></script>
+</body>
+</html>
